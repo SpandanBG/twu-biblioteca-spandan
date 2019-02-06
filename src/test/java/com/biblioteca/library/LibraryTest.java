@@ -3,39 +3,23 @@ package com.biblioteca.library;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static com.biblioteca.library.Book.book;
 import static com.biblioteca.library.Library.library;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LibraryTest {
 
     @Test
-    void expectsHarryPotterAsAListOfBooks() {
-        Library library = library(Arrays.asList(
-                book("Harry Potter")
-        ));
+    void expectsToLoopOverTheListOfBooksInLibrary() {
+        List<Book> books = Arrays.asList(
+                book("Hunger Games", "Suzanne Collins", 2008),
+                book("Fever Code", "James Dashner", 2016)
+        );
+        Library library = library(books);
 
-        String expectedList =
-                "List of available books\n" +
-                "Harry Potter\n";
-
-        assertEquals(expectedList, library.bookList());
-    }
-
-    @Test
-    void expectsGodfatherAndLordOfTheRingsAsListOfBooks() {
-        Library library = library(Arrays.asList(
-                book("Godfather"),
-                book("Lord Of The Rings")
-        ));
-
-        String expectedList =
-                "List of available books\n" +
-                "Godfather\n" +
-                "Lord Of The Rings\n";
-
-        assertEquals(expectedList, library.bookList());
+        library.forEachBook(book -> assertTrue(books.contains(book)));
     }
 
 }

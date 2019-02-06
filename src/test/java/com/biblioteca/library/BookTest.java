@@ -2,22 +2,29 @@ package com.biblioteca.library;
 
 import org.junit.jupiter.api.Test;
 
-import static com.biblioteca.library.Book.book;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.biblioteca.library.Book.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 class BookTest {
 
     @Test
-    void expectsHungerGamesAsTheNameOfTheBook() {
-        Book aBook = book("Hunger Games");
+    void expectsNameOfTheBook() {
+        Book book = book("Hunger Games", "Suzanne Collins", 2008);
 
-        assertEquals("Hunger Games", aBook.toString());
+        assertEquals("Hunger Games", book.name());
     }
 
     @Test
-    void expectsMazeRunnerAsTheNameOfTheBook() {
-        Book aBook = book("Maze Runner");
+    void expectsAuthorOfTheBook() {
+        Book book = book("Hunger Games", "Suzanne Collins", 2008);
 
-        assertEquals("Maze Runner", aBook.toString());
+        assertEquals("Suzanne Collins", book.author());
+    }
+
+    @Test
+    void expectsYearOfTheBook() {
+        Book book = book("Hunger Games", "Suzanne Collins", 2008);
+
+        assertEquals("2008", book.year());
     }
 }

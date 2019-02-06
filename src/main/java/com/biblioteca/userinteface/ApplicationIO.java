@@ -18,8 +18,12 @@ public class ApplicationIO {
         return new ApplicationIO(writer);
     }
 
-    void print(String message) throws IOException {
-        writer.write(message);
-        writer.flush();
+    public void print(String message) {
+        try {
+            writer.write(message);
+            writer.flush();
+        } catch (IOException ignored) {
+            throw new NoOutputDeviceException();
+        }
     }
 }

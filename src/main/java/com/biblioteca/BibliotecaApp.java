@@ -1,13 +1,12 @@
 package com.biblioteca;
 
 import com.biblioteca.userinteface.ApplicationIO;
-import com.biblioteca.userinteface.ApplicationLifecycle;
+import com.biblioteca.activities.MainActivity;
 
 public class BibliotecaApp {
     public static void main(String...args) {
         ApplicationIO appIO = ApplicationIO.createConsoleIO();
-        ApplicationLifecycle app = new ApplicationLifecycle(appIO);
-
-        app.greet();
+        MainActivity mainActivity = new MainActivity(appIO);
+        mainActivity.run();
     }
 }

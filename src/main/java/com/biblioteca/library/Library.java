@@ -1,12 +1,11 @@
 package com.biblioteca.library;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 // Represents a collection of books or periodicals
 public class Library {
 
-    public static final String NEW_LINE = "\n";
-    private static final String BOOK_LIST_PREFIX = "List of available books\n";
     private final List<Book> books;
 
     private Library(List<Book> books) {
@@ -17,9 +16,9 @@ public class Library {
         return new Library(books);
     }
 
-    public String bookList() {
-        final StringBuilder listString = new StringBuilder(BOOK_LIST_PREFIX);
-        books.forEach((book) -> listString.append(book.toString() + NEW_LINE));
-        return listString.toString();
+    public void forEachBook(Consumer<? super Book> action) {
+        for (Book book : books) {
+            action.accept(book);
+        }
     }
 }
