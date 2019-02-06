@@ -37,9 +37,7 @@ public class MainActivity extends ActivityLifecycle {
     }
 
     @Override
-    public void onExit() {
-
-    }
+    public void onExit() {}
 
     private void greet() {
         appIO.print(GREETING_MESSAGE);
