@@ -10,12 +10,12 @@ abstract public class ActivityLifecycle {
     }
 
     public void run() {
-        onCreate();
+        onStart();
         onRunning();
         onExit();
     }
 
-    abstract public void onCreate();
+    abstract public void onStart();
     abstract public void onRunning();
     abstract public void onExit();
 }

@@ -12,8 +12,8 @@ class ActivityLifecycleTest {
         final ApplicationIO appIO = mock(ApplicationIO.class);
         ActivityLifecycle activity = new ActivityLifecycle(appIO) {
             @Override
-            public void onCreate() {
-                appIO.print("onCreate Called");
+            public void onStart() {
+                appIO.print("onStart Called");
             }
 
             @Override
@@ -29,7 +29,7 @@ class ActivityLifecycleTest {
 
         activity.run();
 
-        verify(appIO).print("onCreate Called");
+        verify(appIO).print("onStart Called");
         verify(appIO).print("onRunning Called");
         verify(appIO).print("onExit Called");
     }

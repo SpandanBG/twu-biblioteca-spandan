@@ -1,21 +1,22 @@
 package com.biblioteca.userinteface;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
 
 // Represents business policy to communicate with application
 public class ApplicationIO {
 
     private final BufferedWriter writer;
+    private final BufferedReader reader;
 
-    private ApplicationIO(BufferedWriter writer) {
+    private ApplicationIO(BufferedWriter writer, BufferedReader reader) {
         this.writer = writer;
+        this.reader = reader;
     }
 
     public static ApplicationIO createConsoleIO() {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
-        return new ApplicationIO(writer);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        return new ApplicationIO(writer, reader);
     }
 
     public void print(String message) {
@@ -24,6 +25,14 @@ public class ApplicationIO {
             writer.flush();
         } catch (IOException ignored) {
             throw new NoOutputDeviceException();
+        }
+    }
+
+    public String read() {
+        try {
+            return reader.readLine();
+        } catch (IOException ignored) {
+            throw new NoInputDeviceException();
         }
     }
 }
