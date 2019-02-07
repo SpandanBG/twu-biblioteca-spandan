@@ -1,3 +1,3 @@
 package com.biblioteca.userinteface;
 
-public class NoInputDeviceException extends RuntimeException {}
+class NoInputDeviceException extends RuntimeException {}

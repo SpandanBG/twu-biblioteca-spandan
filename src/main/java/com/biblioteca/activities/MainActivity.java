@@ -1,79 +1,63 @@
 package com.biblioteca.activities;
 
 import com.biblioteca.library.Library;
-import com.biblioteca.library.ViewTemplates;
-import com.biblioteca.userinteface.ActivityLifecycle;
+import com.biblioteca.library.LibraryTemplates;
 import com.biblioteca.userinteface.ApplicationIO;
-
-import java.util.Collections;
-
-import static com.biblioteca.library.Book.book;
-import static com.biblioteca.library.Library.library;
+import com.biblioteca.utils.Menu;
+import com.biblioteca.utils.MenuTemplates;
 
 // Represents the beginning of the system
-public class MainActivity extends ActivityLifecycle {
+public class MainActivity {
 
-    private static final String START_UP_MESSAGE = "Hello user!\nWelcome to the Biblioteca Application.\n";
-    private static final String MENU = "\n\t\tMenu\n\t1) List Books\n\t0) Quit\nChoice: ";
-    private static final String EXIT_MESSAGE = "Bye";
+    private static final String START_UP_MESSAGE = "Hello user!\nWelcome to the Biblioteca Library Application.\n";
+    public static final String LIST_BOOK_HEADER = "Available books:\n";
 
-    private static final String LIST_BOOK_OPTION = "1";
-    private static final String QUIT_OPTION = "0";
-    private static final String INVALID_INPUT_STRING = "Unknown option!\n";
+    private final ApplicationIO appIO;
+    private final Library library;
+    private final Menu menu;
 
-    private Library library;
+    private boolean toExit;
 
-    public MainActivity(ApplicationIO appIO) {
-        super(appIO);
+    public MainActivity(ApplicationIO appIO, Library library) {
+        this.appIO = appIO;
+        this.library = library;
+        this.menu = new Menu();
+        this.toExit = false;
+        setupMenu();
     }
 
-    @Override
-    public void onStart() {
-        library = library(Collections.singletonList(
-                book("Hunger Games", "Suzanne Collins", 2008)
-        ));
-        appIO.print(START_UP_MESSAGE);
+    public void run() {
+        greet();
+        showMenu();
     }
 
-    @Override
-    public void onRunning() {
-        menu();
+    private void setupMenu() {
+        menu.addOption("exit", "Exit application", this::exit);
+        menu.addOption("list", "List books", this::listBook);
     }
 
-    @Override
-    public void onExit() {
-        appIO.print(EXIT_MESSAGE);
-    }
-
-    private void menu() {
-        String option;
-        do {
-            appIO.print(MENU);
-            option = appIO.read();
-            actOnOption(option);
-        } while (!option.equals(QUIT_OPTION));
-    }
-
-    private void actOnOption(String option) {
-        switch (option) {
-            case QUIT_OPTION:
-                break;
-            case LIST_BOOK_OPTION:
-                showBooks();
-                break;
-            default:
-                appIO.print(INVALID_INPUT_STRING);
+    private void showMenu() {
+        String menuString = MenuTemplates.COMMAND_VIEW.view(menu);
+        while (!toExit) {
+            appIO.print(menuString);
+            String option = appIO.read();
+            menu.selectOrDefault(option, () -> appIO.print("Unknown option!\n"));
         }
     }
 
-    private void showBooks() {
+    private void greet() {
+        appIO.print(START_UP_MESSAGE);
+    }
+
+    private void listBook() {
         StringBuilder builder = new StringBuilder();
-        int index = 1;
-        library.forEachBook(book -> {
-            builder.append(index).append(") ").append(ViewTemplates.INFORMAL.view(book));
-        });
-        appIO.print("\n\tAvailable Books\n");
+        builder.append(LIST_BOOK_HEADER);
+        builder.append(LibraryTemplates.INFORMAL.view(library));
         appIO.print(builder.toString());
     }
 
+    private void exit() {
+        this.toExit = true;
+        appIO.print("\tBye");
+    }
 }

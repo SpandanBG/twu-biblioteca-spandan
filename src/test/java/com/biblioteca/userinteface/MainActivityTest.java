@@ -1,73 +1,98 @@
 package com.biblioteca.userinteface;
 
 import com.biblioteca.activities.MainActivity;
+import com.biblioteca.library.Library;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.stubbing.Answer;
 
+import java.util.Arrays;
+import java.util.Collections;
+
+import static com.biblioteca.library.Book.*;
+import static com.biblioteca.library.Library.*;
+import static java.util.Collections.EMPTY_LIST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class MainActivityTest {
 
     @Test
-    void expectsAGreetingMessageWhenApplicationIsStarted() {
+    void expectsApplicationToGreetOnStartUp() {
         ApplicationIO appIO = mock(ApplicationIO.class);
-        MainActivity activity = new MainActivity(appIO);
+        MainActivity activity = new MainActivity(appIO, library(EMPTY_LIST));
 
-        String greetingString = "Hello user!\nWelcome to the Biblioteca Application.\n";
-        activity.onStart();
+        when(appIO.read()).thenReturn("exit");
+        activity.run();
 
-        verify(appIO, times(1)).print(greetingString);
+        verify(appIO).print("Hello user!\nWelcome to the Biblioteca Library Application.\n");
     }
 
     @Test
-    void expectsAMenuWhenApplicationIsRunning() {
-        ApplicationIO appIO = mock(ApplicationIO.class);
-        MainActivity activity = new MainActivity(appIO);
-
-        String menuString = "\n\t\tMenu\n\t1) List Books\n\t0) Quit\nChoice: ";
-        when(appIO.read()).then((Answer<String>) invocation -> "0");
-
-        activity.onRunning();
-
-        verify(appIO).print(menuString);
-    }
-
-    @Test
-    void expectsAExitMessageWhenApplicationEnds() {
-        ApplicationIO appIO = mock(ApplicationIO.class);
-        MainActivity activity = new MainActivity(appIO);
-
-        String exitString = "Bye";
-        activity.onExit();
-
-        verify(appIO).print(exitString);
-    }
-
-    @Test
-    void expectsQuitWhenUserChoosesQuitOption() {
+    void expectsApplicationToDisplayMenuAfterGreeting() {
         ApplicationIO appIO = mock(ApplicationIO.class);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        MainActivity activity = new MainActivity(appIO);
+        MainActivity activity = new MainActivity(appIO, library(EMPTY_LIST));
 
-        when(appIO.read()).then((Answer<String>) invocation -> "0");
+        String expectedMenu = "\t\tCommand Menu\n" +
+                "\texit - Exit application\n" +
+                "\tlist - List books\n" +
+                "Command >> ";
+        when(appIO.read()).thenReturn("exit");
         activity.run();
 
         verify(appIO, times(3)).print(captor.capture());
-        assertEquals("Bye", captor.getAllValues().get(2));
+        assertEquals(expectedMenu, captor.getAllValues().get(1));
     }
 
     @Test
-    void expectsInvalidOptionWhenUserChoosesWrongOption() {
+    void expectsListOfBooksWhenListBookOptionIsSelected() {
         ApplicationIO appIO = mock(ApplicationIO.class);
+        Library library = library(Collections.singletonList(
+                book("Hunger Games", "Suzanne Collins", 2008)
+        ));
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        MainActivity activity = new MainActivity(appIO);
+        MainActivity activity = new MainActivity(appIO, library);
 
-        when(appIO.read()).thenReturn("-1", "0");
+        String expectedList = "Available books:\n" +
+                "1) Hunger Games\n\t- Suzzane Collins (2008)\n";
+        when(appIO.read()).thenReturn("list").thenReturn("exit");
         activity.run();
 
         verify(appIO, times(5)).print(captor.capture());
-        assertEquals("Unknown option!\n", captor.getAllValues().get(2));
+        assertEquals(expectedList, captor.getAllValues().get(2));
+    }
+
+    @Test
+    void expectsAGoodByeMessageOnExit() {
+        ApplicationIO appIO = mock(ApplicationIO.class);
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        MainActivity activity = new MainActivity(appIO, library(EMPTY_LIST));
+
+        String expectedMessage = "\tBye";
+        when(appIO.read()).thenReturn("exit");
+        activity.run();
+
+        verify(appIO, times(3)).print(captor.capture());
+        assertEquals(expectedMessage, captor.getAllValues().get(2));
+    }
+
+    @Test
+    void expectsListOFBooksWhenLibraryHasTwoBooks() {
+        ApplicationIO appIO = mock(ApplicationIO.class);
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        Library library = library(Arrays.asList(
+                book("Hunger Games", "Suzzane Collins", 2008),
+                book("Fever Code", "James Dashner", 2009)
+        ));
+        MainActivity activity = new MainActivity(appIO, library);
+
+        String expectedList = "Available books:\n" +
+                "1) Hunger Games\n\t- Suzzane Collins (2008)\n" +
+                "2) Fever Code\n\t- James Dashner (2009)\n";
+        when(appIO.read()).thenReturn("list").thenReturn("exit");
+        activity.run();
+
+        verify(appIO, times(5)).print(captor.capture());
+        assertEquals(expectedList, captor.getAllValues().get(2));
     }
 }

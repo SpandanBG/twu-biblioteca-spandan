@@ -5,15 +5,15 @@ import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-class ActivityLifecycleTest {
+class ActivityTest {
 
     @Test
     void expectsOnCreateOnRunningAndOnExitToRunInSequence() {
         final ApplicationIO appIO = mock(ApplicationIO.class);
-        ActivityLifecycle activity = new ActivityLifecycle(appIO) {
+        Activity activity = new Activity(appIO) {
             @Override
-            public void onStart() {
-                appIO.print("onStart Called");
+            public void onCreate() {
+                appIO.print("onCreate Called");
             }
 
             @Override
@@ -29,7 +29,7 @@ class ActivityLifecycleTest {
 
         activity.run();
 
-        verify(appIO).print("onStart Called");
+        verify(appIO).print("onCreate Called");
         verify(appIO).print("onRunning Called");
         verify(appIO).print("onExit Called");
     }

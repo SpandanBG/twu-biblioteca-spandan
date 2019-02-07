@@ -17,15 +17,15 @@ public class Book {
         return new Book(name, author, year);
     }
 
-    public String name() {
+    String name() {
         return name;
     }
 
-    public String author() {
+    String author() {
         return author;
     }
 
-    public String year() {
+    String year() {
         return year.toString();
     }
 }
