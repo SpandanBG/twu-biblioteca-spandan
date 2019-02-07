@@ -3,25 +3,26 @@ package com.biblioteca.activities;
 import com.biblioteca.library.Library;
 import com.biblioteca.library.LibraryTemplates;
 import com.biblioteca.userinteface.ApplicationIO;
-import com.biblioteca.utils.Menu;
-import com.biblioteca.utils.MenuTemplates;
+import com.biblioteca.utils.Options;
+import com.biblioteca.utils.OptionTemplates;
 
 // Represents the beginning of the system
-public class MainActivity {
+public class MainMenu {
 
     private static final String START_UP_MESSAGE = "Hello user!\nWelcome to the Biblioteca Library Application.\n";
-    public static final String LIST_BOOK_HEADER = "Available books:\n";
+    private static final String LIST_BOOK_HEADER = "\nAvailable books:\n";
+    private static final String NO_BOOKS_AVAILABLE = "\nNo books available.\n";
 
     private final ApplicationIO appIO;
     private final Library library;
-    private final Menu menu;
+    private final Options options;
 
     private boolean toExit;
 
-    public MainActivity(ApplicationIO appIO, Library library) {
+    public MainMenu(ApplicationIO appIO, Library library) {
         this.appIO = appIO;
         this.library = library;
-        this.menu = new Menu();
+        this.options = new Options();
         this.toExit = false;
         setupMenu();
     }
@@ -32,16 +33,17 @@ public class MainActivity {
     }
 
     private void setupMenu() {
-        menu.addOption("exit", "Exit application", this::exit);
-        menu.addOption("list", "List books", this::listBook);
+        options.addOption("exit", "Exit application", this::exit);
+        options.addOption("list", "List books", this::listBook);
+        options.addOption("checkout", "Checkout book", this::launchCheckoutActivity);
     }
 
     private void showMenu() {
-        String menuString = MenuTemplates.COMMAND_VIEW.view(menu);
+        String menuString = OptionTemplates.COMMAND_VIEW.view(options);
         while (!toExit) {
             appIO.print(menuString);
             String option = appIO.read();
-            menu.selectOrDefault(option, () -> appIO.print("Unknown option!\n"));
+            options.selectOrDefault(option, () -> appIO.print("Unknown option!\n"));
         }
     }
 
@@ -50,10 +52,20 @@ public class MainActivity {
     }
 
     private void listBook() {
+        String libraryView = LibraryTemplates.INFORMAL_LIST_VIEW.view(library);
+        if (libraryView.equals("")) {
+            appIO.print(NO_BOOKS_AVAILABLE);
+            return;
+        }
         StringBuilder builder = new StringBuilder();
         builder.append(LIST_BOOK_HEADER);
-        builder.append(LibraryTemplates.INFORMAL.view(library));
+        builder.append(libraryView);
         appIO.print(builder.toString());
+    }
+
+    private void launchCheckoutActivity() {
+        CheckoutMenu activity = new CheckoutMenu(appIO, library);
+        activity.run();
     }
 
     private void exit() {

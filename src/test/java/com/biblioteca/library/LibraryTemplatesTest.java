@@ -16,10 +16,9 @@ class LibraryTemplatesTest {
                 book("Hunger Games", "Suzanne Collins", 2008)
         ));
 
-        String expectedString = "1) Hunger Games\n" +
-                "\t- Suzanne Collins (2008)\n";
+        String expectedString = "1 - Hunger Games, by Suzanne Collins (2008)\n";
 
-        assertEquals(expectedString, LibraryTemplates.INFORMAL.view(library));
+        assertEquals(expectedString, LibraryTemplates.INFORMAL_LIST_VIEW.view(library));
     }
 
 }

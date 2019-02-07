@@ -5,15 +5,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.*;
 
-class MenuTest {
+class OptionsTest {
 
     @Test
     void expectsAHelloWorldPrintWhenUserChooseOptionOne() {
         ApplicationIO appIO = mock(ApplicationIO.class);
-        Menu menu = new Menu();
+        Options options = new Options();
 
-        menu.addOption("hello", "says hello", () -> appIO.print("Hello World"));
-        menu.select("hello");
+        options.addOption("hello", "says hello", () -> appIO.print("Hello World"));
+        options.select("hello");
 
         verify(appIO).print("Hello World");
     }
@@ -21,9 +21,9 @@ class MenuTest {
     @Test
     void expectsDefaultActionPrintWhenUserChoosesWrongOption() {
         ApplicationIO appIO = mock(ApplicationIO.class);
-        Menu menu = new Menu();
+        Options options = new Options();
 
-        menu.selectOrDefault("hello", () -> appIO.print("Default Action"));
+        options.selectOrDefault("hello", () -> appIO.print("Default Action"));
 
         verify(appIO).print("Default Action");
     }

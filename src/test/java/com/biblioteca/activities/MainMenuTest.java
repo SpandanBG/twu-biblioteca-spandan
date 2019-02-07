@@ -1,25 +1,25 @@
-package com.biblioteca.userinteface;
+package com.biblioteca.activities;
 
-import com.biblioteca.activities.MainActivity;
 import com.biblioteca.library.Library;
+import com.biblioteca.userinteface.ApplicationIO;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
 import java.util.Collections;
 
-import static com.biblioteca.library.Book.*;
-import static com.biblioteca.library.Library.*;
+import static com.biblioteca.library.Book.book;
+import static com.biblioteca.library.Library.library;
 import static java.util.Collections.EMPTY_LIST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-class MainActivityTest {
+class MainMenuTest {
 
     @Test
     void expectsApplicationToGreetOnStartUp() {
         ApplicationIO appIO = mock(ApplicationIO.class);
-        MainActivity activity = new MainActivity(appIO, library(EMPTY_LIST));
+        MainMenu activity = new MainMenu(appIO, library(EMPTY_LIST));
 
         when(appIO.read()).thenReturn("exit");
         activity.run();
@@ -31,11 +31,12 @@ class MainActivityTest {
     void expectsApplicationToDisplayMenuAfterGreeting() {
         ApplicationIO appIO = mock(ApplicationIO.class);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        MainActivity activity = new MainActivity(appIO, library(EMPTY_LIST));
+        MainMenu activity = new MainMenu(appIO, library(EMPTY_LIST));
 
-        String expectedMenu = "\t\tCommand Menu\n" +
+        String expectedMenu = "\n\t\tCommand Options\n" +
                 "\texit - Exit application\n" +
                 "\tlist - List books\n" +
+                "\tcheckout - Checkout book\n" +
                 "Command >> ";
         when(appIO.read()).thenReturn("exit");
         activity.run();
@@ -48,12 +49,12 @@ class MainActivityTest {
     void expectsListOfBooksWhenListBookOptionIsSelected() {
         ApplicationIO appIO = mock(ApplicationIO.class);
         Library library = library(Collections.singletonList(
-                book("Hunger Games", "Suzanne Collins", 2008)
+                book("Hunger Games", "Suzzane Collins", 2008)
         ));
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        MainActivity activity = new MainActivity(appIO, library);
+        MainMenu activity = new MainMenu(appIO, library);
 
-        String expectedList = "Available books:\n" +
+        String expectedList = "\nAvailable books:\n" +
                 "1) Hunger Games\n\t- Suzzane Collins (2008)\n";
         when(appIO.read()).thenReturn("list").thenReturn("exit");
         activity.run();
@@ -66,7 +67,7 @@ class MainActivityTest {
     void expectsAGoodByeMessageOnExit() {
         ApplicationIO appIO = mock(ApplicationIO.class);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        MainActivity activity = new MainActivity(appIO, library(EMPTY_LIST));
+        MainMenu activity = new MainMenu(appIO, library(EMPTY_LIST));
 
         String expectedMessage = "\tBye";
         when(appIO.read()).thenReturn("exit");
@@ -84,11 +85,25 @@ class MainActivityTest {
                 book("Hunger Games", "Suzzane Collins", 2008),
                 book("Fever Code", "James Dashner", 2009)
         ));
-        MainActivity activity = new MainActivity(appIO, library);
+        MainMenu activity = new MainMenu(appIO, library);
 
-        String expectedList = "Available books:\n" +
+        String expectedList = "\nAvailable books:\n" +
                 "1) Hunger Games\n\t- Suzzane Collins (2008)\n" +
                 "2) Fever Code\n\t- James Dashner (2009)\n";
+        when(appIO.read()).thenReturn("list").thenReturn("exit");
+        activity.run();
+
+        verify(appIO, times(5)).print(captor.capture());
+        assertEquals(expectedList, captor.getAllValues().get(2));
+    }
+
+    @Test
+    void expectsNoBooksAvailableWhenLibraryIsEmptyOnListBookOptionSelected() {
+        ApplicationIO appIO = mock(ApplicationIO.class);
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        MainMenu activity = new MainMenu(appIO, library(EMPTY_LIST));
+
+        String expectedList = "\nNo books available.\n";
         when(appIO.read()).thenReturn("list").thenReturn("exit");
         activity.run();
 

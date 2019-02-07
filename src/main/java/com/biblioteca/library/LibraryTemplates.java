@@ -5,16 +5,16 @@ import com.biblioteca.utils.Incrementor;
 // Represents view styles
 public enum LibraryTemplates {
 
-    INFORMAL {
+    INFORMAL_LIST_VIEW {
         @Override
         public String view(Library library) {
             StringBuilder builder = new StringBuilder();
-            String format = "%d) %s\n\t- %s (%s)\n";
+            String format = "%d - %s\n";
             Incrementor index = new Incrementor(1);
             library.forEachBook(book -> {
                 builder.append(String.format(
-                        format,
-                        index.value(), book.name(), book.author(), book.year()
+                        format, index.value(),
+                        BookTemplates.INFORMAL.view(book)
                 ));
                 index.increment(1);
             });
