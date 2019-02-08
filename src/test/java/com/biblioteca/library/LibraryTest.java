@@ -8,7 +8,8 @@ import java.util.List;
 
 import static com.biblioteca.library.Book.book;
 import static com.biblioteca.library.Library.library;
-import static java.util.Collections.*;
+import static java.util.Collections.EMPTY_LIST;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LibraryTest {
@@ -49,7 +50,7 @@ class LibraryTest {
         Book book = book("Some book", "A author", 2020);
         Library library = library(singletonList(book));
 
-        assertDoesNotThrow(() -> library.checkoutBook(book));
+        assertDoesNotThrow(() -> library.checkOutBook(book));
     }
 
     @Test
@@ -57,7 +58,7 @@ class LibraryTest {
         Book book = book("Some book", "A author", 2020);
         Library library = library(EMPTY_LIST);
 
-        assertThrows(BookNotAvailableException.class, () -> library.checkoutBook(book));
+        assertThrows(BookNotAvailableException.class, () -> library.checkOutBook(book));
     }
 
     @Test
@@ -73,6 +74,24 @@ class LibraryTest {
         Library library = library(singletonList(book));
 
         assertFalse(library.isEmpty());
+    }
+
+    @Test
+    void expectsLibraryToReturnBorrowedBook() {
+        Book book = book("Some book", "A author", 2020);
+        Library library = library(singletonList(book));
+
+        library.checkOutBook(book);
+
+        assertDoesNotThrow(() -> library.checkInBook(book));
+    }
+
+    @Test
+    void expectsLibraryToNotReturnUnBorrowedBook() {
+        Book book = book("Some book", "A author", 2020);
+        Library library = library(singletonList(book));
+
+        assertThrows(BookNotFoundException.class, () -> library.checkInBook(book));
     }
 
 }

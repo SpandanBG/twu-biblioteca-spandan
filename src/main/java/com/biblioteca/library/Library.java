@@ -22,7 +22,7 @@ public class Library {
     public Library filterBookByName(String bookName) {
         List<Book> selectedBook = new ArrayList<>();
         availableBooks.forEach(book -> {
-            if(book.name().toLowerCase().contains(bookName.toLowerCase())) {
+            if (book.name().toLowerCase().contains(bookName.toLowerCase())) {
                 selectedBook.add(book);
             }
         });
@@ -35,7 +35,7 @@ public class Library {
         }
     }
 
-    public void checkoutBook(Book book) {
+    public void checkOutBook(Book book) {
         if (!availableBooks.remove(book)) {
             throw new BookNotAvailableException();
         }
@@ -44,5 +44,16 @@ public class Library {
 
     public boolean isEmpty() {
         return availableBooks.size() == 0;
+    }
+
+    public Library borrowedBooks() {
+        return new Library(unavailableBooks);
+    }
+
+    public void checkInBook(Book book) {
+        if (!unavailableBooks.remove(book)) {
+            throw new BookNotFoundException();
+        }
+        availableBooks.add(book);
     }
 }
