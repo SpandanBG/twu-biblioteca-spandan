@@ -1,12 +1,15 @@
 package com.biblioteca.activities;
 
+import com.biblioteca.library.Book;
 import com.biblioteca.library.Library;
 import com.biblioteca.userinteface.ApplicationIO;
+import com.biblioteca.utils.Incrementor;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static com.biblioteca.library.Book.book;
 import static com.biblioteca.library.Library.library;
@@ -23,6 +26,7 @@ class CheckoutMenuTest {
         ));
         CheckoutMenu activity = new CheckoutMenu(appIO, library);
 
+        when(appIO.read()).thenReturn("cancel");
         String expectedString = "\nSearch by name: ";
         activity.run();
 
@@ -39,9 +43,9 @@ class CheckoutMenuTest {
         CheckoutMenu activity = new CheckoutMenu(appIO, library);
 
         when(appIO.read()).thenReturn("Hunger Games");
-        String expectedString = "\n\tBooks by that name:\n" +
-                "1 - Hunger Games, by Suzzane Collins (2008)\n" +
-                "cancel - Cancel checkout\n" +
+        String expectedString = "\n\t\tBooks by that name:\n" +
+                "\t1 - Hunger Games, by Suzzane Collins (2008)\n" +
+                "\tcancel - Cancel checkout\n" +
                 "Enter book number [default: cancel]: ";
         activity.run();
 
@@ -62,15 +66,37 @@ class CheckoutMenuTest {
 
         when(appIO.read()).thenReturn("Hunger Games");
         String expectedString = "\n\t\tBooks by that name:\n" +
-                "\tcancel - Cancel checkout\n" +
                 "\t1 - Hunger Games, by Suzanne Collins (2008)\n" +
                 "\t2 - Catching Fire (Hunger Games), by Suzanne Collins (2010)\n" +
+                "\tcancel - Cancel checkout\n" +
                 "Enter book number [default: cancel]: ";
         activity.run();
 
         verify(appIO).read();
         verify(appIO, times(2)).print(captor.capture());
         assertEquals(expectedString, captor.getAllValues().get(1));
+    }
+
+    @Test
+    void expectsNoBookInLibraryOnCheckout() {
+        ApplicationIO appIO = mock(ApplicationIO.class);
+        List<Book> books = Collections.singletonList(
+                book("Hunger Games", "Suzanne Collins", 2008)
+        );
+        Library library = library(books);
+        CheckoutMenu menu = new CheckoutMenu(appIO, library);
+
+        when(appIO.read()).thenReturn("hunger").thenReturn("1");
+        menu.run();
+
+        Incrementor count = new Incrementor(0);
+        library.forEachBook(book -> {
+            if (books.contains(book)) {
+                count.increment(1);
+            }
+        });
+
+        assertEquals(0, count.value());
     }
 
 }

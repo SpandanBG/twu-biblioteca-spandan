@@ -2,7 +2,9 @@ package com.biblioteca.utils;
 
 import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -10,17 +12,17 @@ import java.util.function.Consumer;
 public class Options {
 
     private final Map<String, Action> actionMap;
-    private final Map<String, String> descriptionMap;
+    private final List<Pair<String, String>> descriptionMap;
     private String suffix;
     private String prefix;
 
     public Options() {
         actionMap = new HashMap<>();
-        descriptionMap = new HashMap<>();
+        descriptionMap = new ArrayList<>();
     }
 
     public void addOption(String option, String description, Action action) {
-        descriptionMap.put(option, description);
+        descriptionMap.add(new Pair<>(option, description));
         actionMap.put(option, action);
     }
 
@@ -49,6 +51,6 @@ public class Options {
     }
 
     public void forEachOption(Consumer<? super Pair> action) {
-        descriptionMap.forEach((option, description) -> action.accept(new Pair<>(option, description)));
+        descriptionMap.forEach(action);
     }
 }
