@@ -3,8 +3,8 @@ package com.biblioteca.activities;
 import com.biblioteca.library.Library;
 import com.biblioteca.library.LibraryTemplates;
 import com.biblioteca.userinteface.ApplicationIO;
-import com.biblioteca.utils.Options;
 import com.biblioteca.utils.OptionTemplates;
+import com.biblioteca.utils.Options;
 
 // Represents the beginning of the system
 public class MainMenu {
@@ -33,9 +33,9 @@ public class MainMenu {
     }
 
     private void setupMenu() {
-        options.addOption("exit", "Exit application", this::exit);
         options.addOption("list", "List books", this::listBook);
         options.addOption("checkout", "Checkout book", this::launchCheckoutActivity);
+        options.addOption("exit", "Exit application", this::exit);
     }
 
     private void showMenu() {

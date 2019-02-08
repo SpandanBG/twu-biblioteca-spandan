@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static com.biblioteca.library.Book.book;
 import static com.biblioteca.library.Library.library;
-import static java.util.Collections.*;
+import static java.util.Collections.EMPTY_LIST;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 

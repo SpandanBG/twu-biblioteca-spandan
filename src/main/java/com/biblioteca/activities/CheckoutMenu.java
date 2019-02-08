@@ -1,5 +1,7 @@
 package com.biblioteca.activities;
 
+import com.biblioteca.library.Book;
+import com.biblioteca.library.BookNotAvailableException;
 import com.biblioteca.library.BookTemplates;
 import com.biblioteca.library.Library;
 import com.biblioteca.userinteface.ApplicationIO;
@@ -7,15 +9,17 @@ import com.biblioteca.utils.Incrementor;
 import com.biblioteca.utils.OptionTemplates;
 import com.biblioteca.utils.Options;
 
-// Represents a series of actions to borrow a book
+// Represents the business policy to borrow book
 public class CheckoutMenu {
 
+    public static final String NO_SUCH_BOOK_MESSAGE = "\nNo such book in library\n";
     private static final String SEARCH_BY_STRING = "\nSearch by name: ";
-    public static final String INAVLID_INPUT_MESSAGE = "Unknown option!\n";
-    public static final String OPTIONS_PREFIX = "Books by that name";
-    public static final String OPTIONS_SUFFIX = "Enter book number [default: cancel]";
-    public static final String NO_BOOK_MESSAGE = "\nNo book with that name\n";
-
+    private static final String INAVLID_INPUT_MESSAGE = "Unknown option!\n";
+    private static final String OPTIONS_PREFIX = "Books by that name";
+    private static final String OPTIONS_SUFFIX = "Enter book number [default: cancel]";
+    private static final String NO_BOOK_MESSAGE = "\nNo book with that name\n";
+    private static final String CANCEL_OPTION = "cancel";
+    private static final String BOOK_CHECKED_MESSAGE = "\nBook checked out. Happy Reading!\n";
     private final ApplicationIO appIO;
     private final Library library;
 
@@ -32,13 +36,17 @@ public class CheckoutMenu {
             appIO.print(NO_BOOK_MESSAGE);
             return;
         }
-        Options options = createBookOptions(filteredBooks);
+        Options options = createSelectableBooks(filteredBooks);
         displayOptions(options);
         chooseOption(options);
     }
 
     private void chooseOption(Options options) {
-        options.selectOrDefault(appIO.read(), this::invalidOption);
+        String option = appIO.read();
+        if (option.equals("")) {
+            option = CANCEL_OPTION;
+        }
+        options.selectOrDefault(option, this::invalidOption);
     }
 
     private void invalidOption() {
@@ -48,22 +56,31 @@ public class CheckoutMenu {
     private void displayOptions(Options options) {
         options.setPrefix(OPTIONS_PREFIX);
         options.setSuffix(OPTIONS_SUFFIX);
-        options.addOption("cancel", "Cancel checkout", () -> {});
-        String bookOptionsMenu = OptionTemplates.CUSTOM_VIEW.view(options);
-        appIO.print(bookOptionsMenu);
+        options.addOption("cancel", "Cancel checkout", () -> {
+        });
+        appIO.print(OptionTemplates.CUSTOM_VIEW.view(options));
     }
 
-    private Options createBookOptions(Library filteredBooks) {
+    private Options createSelectableBooks(Library filteredBooks) {
         Options bookOptions = new Options();
         Incrementor index = new Incrementor(1);
         filteredBooks.forEachBook(book -> {
             bookOptions.addOption(
                     index.value().toString(),
                     BookTemplates.INFORMAL.view(book),
-                    () -> library.checkoutBook(book)
+                    () -> this.checkoutBook(book)
             );
             index.increment(1);
         });
         return bookOptions;
+    }
+
+    private void checkoutBook(Book book) {
+        try {
+            library.checkOutBook(book);
+            appIO.print(BOOK_CHECKED_MESSAGE);
+        } catch (BookNotAvailableException ignored) {
+            appIO.print(NO_SUCH_BOOK_MESSAGE);
+        }
     }
 }
