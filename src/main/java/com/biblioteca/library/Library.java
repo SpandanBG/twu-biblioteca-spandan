@@ -2,6 +2,7 @@ package com.biblioteca.library;
 
 import com.biblioteca.utils.Options;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -18,26 +19,21 @@ public class Library {
         return new Library(books);
     }
 
+    public Library filterBookByName(String bookName) {
+        List<Book> selectedBook = new ArrayList<>();
+        books.forEach(book -> {
+            if(book.name().toLowerCase().contains(bookName.toLowerCase())) {
+                selectedBook.add(book);
+            }
+        });
+        return new Library(selectedBook);
+    }
+
     public void forEachBook(Consumer<? super Book> action) {
         for (Book book : books) {
             action.accept(book);
         }
     }
 
-    public void forBookByPattern(String bookName, Consumer<? super Book> action) {
-        books.forEach(book -> {
-            if (book.name().toLowerCase().contains(bookName.toLowerCase())) {
-                action.accept(book);
-            }
-        });
-    }
-
-    public void addBookToOption(Integer index, Options options, Book book) {
-        String option = index.toString();
-        String description = BookTemplates.INFORMAL.view(book);
-        final Book bookAsOption = book;
-        options.addOption(option, description, () -> this.checkoutBook(bookAsOption));
-    }
-
-    private void checkoutBook(Book book) {}
+    public void checkoutBook(Book book) {}
 }

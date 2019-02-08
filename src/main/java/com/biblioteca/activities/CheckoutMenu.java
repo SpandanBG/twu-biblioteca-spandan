@@ -1,5 +1,6 @@
 package com.biblioteca.activities;
 
+import com.biblioteca.library.BookTemplates;
 import com.biblioteca.library.Library;
 import com.biblioteca.userinteface.ApplicationIO;
 import com.biblioteca.utils.Incrementor;
@@ -29,18 +30,23 @@ public class CheckoutMenu {
     private void displayOptions(Options options) {
         options.setPrefix("Books by that name");
         options.setSuffix("Enter book number [default: cancel]");
+        options.addOption("cancel", "Cancel checkout", () -> {});
         String bookOptionsMenu = OptionTemplates.CUSTOM_VIEW.view(options);
         appIO.print(bookOptionsMenu);
     }
 
     private Options getBookOptions(String bookName) {
+        Library filteredBooks = library.filterBookByName(bookName);
         Options bookOptions = new Options();
         Incrementor index = new Incrementor(1);
-        library.forBookByPattern(bookName, (book) -> {
-            library.addBookToOption(index.value(), bookOptions, book);
+        filteredBooks.forEachBook(book -> {
+            bookOptions.addOption(
+                    index.value().toString(),
+                    BookTemplates.INFORMAL.view(book),
+                    () -> library.checkoutBook(book)
+            );
             index.increment(1);
         });
-        bookOptions.addOption("cancel", "Cancel checkout", () -> {});
         return bookOptions;
     }
 }
