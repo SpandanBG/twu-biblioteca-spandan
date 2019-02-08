@@ -8,8 +8,8 @@ import java.util.List;
 
 import static com.biblioteca.library.Book.book;
 import static com.biblioteca.library.Library.library;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static java.util.Collections.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 class LibraryTest {
 
@@ -42,6 +42,22 @@ class LibraryTest {
         });
 
         assertEquals(3, count.value());
+    }
+
+    @Test
+    void expectsABookToBeCheckoutSuccessfully() {
+        Book book = book("Some book", "A author", 2020);
+        Library library = library(singletonList(book));
+
+        assertDoesNotThrow(() -> library.checkoutBook(book));
+    }
+
+    @Test
+    void expectsBookNotAvailableIfBookNotInLibrary() {
+        Book book = book("Some book", "A author", 2020);
+        Library library = library(EMPTY_LIST);
+
+        assertThrows(BookNotAvailableException.class, () -> library.checkoutBook(book));
     }
 
 }

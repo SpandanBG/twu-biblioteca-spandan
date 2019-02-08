@@ -1,18 +1,18 @@
 package com.biblioteca.library;
 
-import com.biblioteca.utils.Options;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-// Represents a collection of books or periodicals
+// Represents a collection of availableBooks or periodicals
 public class Library {
 
-    private final List<Book> books;
+    private final List<Book> availableBooks;
+    private final List<Book> unavailableBooks;
 
-    private Library(List<Book> books) {
-        this.books = books;
+    private Library(List<Book> availableBooks) {
+        this.availableBooks = new ArrayList<>(availableBooks);
+        this.unavailableBooks = new ArrayList<>();
     }
 
     public static Library library(List<Book> books) {
@@ -21,7 +21,7 @@ public class Library {
 
     public Library filterBookByName(String bookName) {
         List<Book> selectedBook = new ArrayList<>();
-        books.forEach(book -> {
+        availableBooks.forEach(book -> {
             if(book.name().toLowerCase().contains(bookName.toLowerCase())) {
                 selectedBook.add(book);
             }
@@ -30,10 +30,15 @@ public class Library {
     }
 
     public void forEachBook(Consumer<? super Book> action) {
-        for (Book book : books) {
+        for (Book book : availableBooks) {
             action.accept(book);
         }
     }
 
-    public void checkoutBook(Book book) {}
+    public void checkoutBook(Book book) {
+        if (!availableBooks.remove(book)) {
+            throw new BookNotAvailableException();
+        }
+        unavailableBooks.add(book);
+    }
 }
