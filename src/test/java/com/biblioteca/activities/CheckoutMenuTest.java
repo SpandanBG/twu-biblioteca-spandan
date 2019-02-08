@@ -13,6 +13,7 @@ import java.util.List;
 
 import static com.biblioteca.library.Book.book;
 import static com.biblioteca.library.Library.library;
+import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -21,7 +22,7 @@ class CheckoutMenuTest {
     @Test
     void expectsUserInputRequestForBookNameToCheckout() {
         ApplicationIO appIO = mock(ApplicationIO.class);
-        Library library = library(Collections.singletonList(
+        Library library = library(singletonList(
                 book("One Hundred Years Of Solitude", "Gabriel García Márquez", 1967)
         ));
         CheckoutMenu activity = new CheckoutMenu(appIO, library);
@@ -37,7 +38,7 @@ class CheckoutMenuTest {
     void expectsListOfBooksThatCanBeCheckedOutWhenSearchedByName() {
         ApplicationIO appIO = mock(ApplicationIO.class);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        Library library = library(Collections.singletonList(
+        Library library = library(singletonList(
                 book("Hunger Games", "Suzzane Collins", 2008)
         ));
         CheckoutMenu activity = new CheckoutMenu(appIO, library);
@@ -49,8 +50,8 @@ class CheckoutMenuTest {
                 "Enter book number [default: cancel]: ";
         activity.run();
 
-        verify(appIO).read();
-        verify(appIO, times(2)).print(captor.capture());
+        verify(appIO, times(2)).read();
+        verify(appIO, times(3)).print(captor.capture());
         assertEquals(expectedString, captor.getAllValues().get(1));
     }
 
@@ -72,15 +73,15 @@ class CheckoutMenuTest {
                 "Enter book number [default: cancel]: ";
         activity.run();
 
-        verify(appIO).read();
-        verify(appIO, times(2)).print(captor.capture());
+        verify(appIO, times(2)).read();
+        verify(appIO, times(3)).print(captor.capture());
         assertEquals(expectedString, captor.getAllValues().get(1));
     }
 
     @Test
     void expectsNoBookInLibraryOnCheckout() {
         ApplicationIO appIO = mock(ApplicationIO.class);
-        List<Book> books = Collections.singletonList(
+        List<Book> books = singletonList(
                 book("Hunger Games", "Suzanne Collins", 2008)
         );
         Library library = library(books);
@@ -97,6 +98,20 @@ class CheckoutMenuTest {
         });
 
         assertEquals(0, count.value());
+    }
+
+    @Test
+    void expectsNoBookFoundIfBookDoesNotExistInLibrary() {
+        ApplicationIO appIO = mock(ApplicationIO.class);
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        Library library = library(EMPTY_LIST);
+        CheckoutMenu menu = new CheckoutMenu(appIO, library);
+
+        when(appIO.read()).thenReturn("hunger");
+        menu.run();
+
+        verify(appIO, times(2)).print(captor.capture());
+        assertEquals("\nNo book with that name\n", captor.getAllValues().get(1));
     }
 
 }

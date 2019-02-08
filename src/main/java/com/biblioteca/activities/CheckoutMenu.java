@@ -11,9 +11,10 @@ import com.biblioteca.utils.Options;
 public class CheckoutMenu {
 
     private static final String SEARCH_BY_STRING = "\nSearch by name: ";
-    public static final String INAVLID_INPUT_STRING = "Unknown option!\n";
+    public static final String INAVLID_INPUT_MESSAGE = "Unknown option!\n";
     public static final String OPTIONS_PREFIX = "Books by that name";
     public static final String OPTIONS_SUFFIX = "Enter book number [default: cancel]";
+    public static final String NO_BOOK_MESSAGE = "\nNo book with that name\n";
 
     private final ApplicationIO appIO;
     private final Library library;
@@ -26,7 +27,12 @@ public class CheckoutMenu {
     public void run() {
         appIO.print(SEARCH_BY_STRING);
         String bookName = appIO.read();
-        Options options = createBookOptions(bookName);
+        Library filteredBooks = library.filterBookByName(bookName);
+        if (filteredBooks.isEmpty()) {
+            appIO.print(NO_BOOK_MESSAGE);
+            return;
+        }
+        Options options = createBookOptions(filteredBooks);
         displayOptions(options);
         chooseOption(options);
     }
@@ -36,7 +42,7 @@ public class CheckoutMenu {
     }
 
     private void invalidOption() {
-        appIO.print(INAVLID_INPUT_STRING);
+        appIO.print(INAVLID_INPUT_MESSAGE);
     }
 
     private void displayOptions(Options options) {
@@ -47,8 +53,7 @@ public class CheckoutMenu {
         appIO.print(bookOptionsMenu);
     }
 
-    private Options createBookOptions(String bookName) {
-        Library filteredBooks = library.filterBookByName(bookName);
+    private Options createBookOptions(Library filteredBooks) {
         Options bookOptions = new Options();
         Incrementor index = new Incrementor(1);
         filteredBooks.forEachBook(book -> {

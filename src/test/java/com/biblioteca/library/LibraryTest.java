@@ -60,4 +60,19 @@ class LibraryTest {
         assertThrows(BookNotAvailableException.class, () -> library.checkoutBook(book));
     }
 
+    @Test
+    void expectsLibraryToBeEmpty() {
+        Library library = library(EMPTY_LIST);
+
+        assertTrue(library.isEmpty());
+    }
+
+    @Test
+    void expectsLibraryToBeNotEmpty() {
+        Book book = book("Some book", "A author", 2020);
+        Library library = library(singletonList(book));
+
+        assertFalse(library.isEmpty());
+    }
+
 }

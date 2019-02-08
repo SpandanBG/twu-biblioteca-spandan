@@ -41,4 +41,8 @@ public class Library {
         }
         unavailableBooks.add(book);
     }
+
+    public boolean isEmpty() {
+        return availableBooks.size() == 0;
+    }
 }
