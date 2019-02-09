@@ -36,7 +36,7 @@ class MainMenuTest {
     }
 
     @Test
-    void expectsListOfBooksWhenListBookOptionIsSelected() {
+    void expectsToListBooksWithOneBookInLibrary() {
         ApplicationIO appIO = mock(ApplicationIO.class);
         Library library = library(Collections.singletonList(
                 book("Hunger Games", "Suzanne Collins", 2008)
@@ -44,13 +44,35 @@ class MainMenuTest {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         MainMenu activity = new MainMenu(appIO, library);
 
-        String expectedList = "\nAvailable books:\n" +
-                "1 - Hunger Games, by Suzanne Collins (2008)\n";
+        String expectedHeader = "\n\t\tAvailable books:\n";
+        String expectedList = "\t1 - Hunger Games, by Suzanne Collins (2008)\n";
         when(appIO.read()).thenReturn("list").thenReturn("exit");
         activity.run();
 
-        verify(appIO, times(5)).print(captor.capture());
-        assertEquals(expectedList, captor.getAllValues().get(2));
+        verify(appIO, times(6)).print(captor.capture());
+        assertEquals(expectedHeader, captor.getAllValues().get(2));
+        assertEquals(expectedList, captor.getAllValues().get(3));
+    }
+
+    @Test
+    void expectsListOFBooksWithTwoBooksInLibrary() {
+        ApplicationIO appIO = mock(ApplicationIO.class);
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        Library library = library(Arrays.asList(
+                book("Hunger Games", "Suzanne Collins", 2008),
+                book("Fever Code", "James Dashner", 2009)
+        ));
+        MainMenu activity = new MainMenu(appIO, library);
+
+        String expectedHeader = "\n\t\tAvailable books:\n";
+        String expectedList = "\t1 - Hunger Games, by Suzanne Collins (2008)\n" +
+                "\t2 - Fever Code, by James Dashner (2009)\n";
+        when(appIO.read()).thenReturn("list").thenReturn("exit");
+        activity.run();
+
+        verify(appIO, times(6)).print(captor.capture());
+        assertEquals(expectedHeader, captor.getAllValues().get(2));
+        assertEquals(expectedList, captor.getAllValues().get(3));
     }
 
     @Test
@@ -68,27 +90,7 @@ class MainMenuTest {
     }
 
     @Test
-    void expectsListOFBooksWhenLibraryHasTwoBooks() {
-        ApplicationIO appIO = mock(ApplicationIO.class);
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        Library library = library(Arrays.asList(
-                book("Hunger Games", "Suzanne Collins", 2008),
-                book("Fever Code", "James Dashner", 2009)
-        ));
-        MainMenu activity = new MainMenu(appIO, library);
-
-        String expectedList = "\nAvailable books:\n" +
-                "1 - Hunger Games, by Suzanne Collins (2008)\n" +
-                "2 - Fever Code, by James Dashner (2009)\n";
-        when(appIO.read()).thenReturn("list").thenReturn("exit");
-        activity.run();
-
-        verify(appIO, times(5)).print(captor.capture());
-        assertEquals(expectedList, captor.getAllValues().get(2));
-    }
-
-    @Test
-    void expectsNoBooksAvailableWhenLibraryIsEmptyOnListBookOptionSelected() {
+    void expectsNoBooksAvailableOnListBook() {
         ApplicationIO appIO = mock(ApplicationIO.class);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         MainMenu activity = new MainMenu(appIO, library(EMPTY_LIST));

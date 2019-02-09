@@ -9,7 +9,7 @@ public enum LibraryTemplates {
         @Override
         public String view(Library library) {
             StringBuilder builder = new StringBuilder();
-            String format = "%d - %s\n";
+            String format = "\t%d - %s\n";
             Incrementor index = new Incrementor(1);
             library.forEachBook(book -> {
                 builder.append(String.format(
