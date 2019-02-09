@@ -59,7 +59,7 @@ class MainMenuTest {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         MainMenu activity = new MainMenu(appIO, library(EMPTY_LIST));
 
-        String expectedMessage = "\tBye";
+        String expectedMessage = "\nGoodbye user. There is always something more to read.\n";
         when(appIO.read()).thenReturn("exit");
         activity.run();
 

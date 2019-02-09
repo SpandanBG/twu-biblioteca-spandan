@@ -13,6 +13,9 @@ public class MainMenu {
     private static final String NO_BOOKS_AVAILABLE = "\nNo books available.\n";
     private static final String MENU_HEADER = "Available commands:";
     private static final String MENU_FOOTER = "";
+    private static final String INVALID_INPUT_MESSAGE = "Unknown option!\n";
+    private static final String INPUT_PROMOTER = ">> ";
+    private static final String EXIT_MESSAGE = "\nGoodbye user. There is always something more to read.\n";
 
     private final ApplicationIO appIO;
     private final Library library;
@@ -35,14 +38,14 @@ public class MainMenu {
 
     private void interactWithUser() {
         while (!toExit) {
-            appIO.print(">> ");
+            appIO.print(INPUT_PROMOTER);
             String option = appIO.read();
             options.selectOrDefault(option, this::invalidOption);
         }
     }
 
     private void invalidOption() {
-        appIO.print("Unknown option!\n");
+        appIO.print(INVALID_INPUT_MESSAGE);
     }
 
     private void setupMenu() {
@@ -82,6 +85,6 @@ public class MainMenu {
 
     private void exit() {
         this.toExit = true;
-        appIO.print("\tBye");
+        appIO.print(EXIT_MESSAGE);
     }
 }
