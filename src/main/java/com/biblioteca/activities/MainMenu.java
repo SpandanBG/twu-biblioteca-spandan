@@ -6,10 +6,9 @@ import com.biblioteca.userinteface.ApplicationIO;
 import com.biblioteca.utils.OptionTemplates;
 import com.biblioteca.utils.Options;
 
-// Represents the beginning of the system
+// Represents the first set of options available to an user
 public class MainMenu {
 
-    private static final String START_UP_MESSAGE = "Hello user!\nWelcome to the Biblioteca Library Application.\n";
     private static final String LIST_BOOK_HEADER = "\nAvailable books:\n";
     private static final String NO_BOOKS_AVAILABLE = "\nNo books available.\n";
 
@@ -19,16 +18,15 @@ public class MainMenu {
 
     private boolean toExit;
 
-    public MainMenu(ApplicationIO appIO, Library library) {
+    MainMenu(ApplicationIO appIO, Library library) {
         this.appIO = appIO;
         this.library = library;
         this.options = new Options();
         this.toExit = false;
-        setupMenu();
     }
 
     public void run() {
-        greet();
+        setupMenu();
         showMenu();
     }
 
@@ -51,10 +49,6 @@ public class MainMenu {
             String option = appIO.read();
             options.selectOrDefault(option, () -> appIO.print("Unknown option!\n"));
         }
-    }
-
-    private void greet() {
-        appIO.print(START_UP_MESSAGE);
     }
 
     private void listBook() {

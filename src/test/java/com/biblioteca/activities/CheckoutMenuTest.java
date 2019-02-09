@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.biblioteca.library.Book.book;
@@ -22,9 +23,8 @@ class CheckoutMenuTest {
     @Test
     void expectsUserInputRequestForBookNameToCheckout() {
         ApplicationIO appIO = mock(ApplicationIO.class);
-        Library library = library(singletonList(
-                book("One Hundred Years Of Solitude", "Gabriel García Márquez", 1967)
-        ));
+        Library library = library(
+                singletonList(book("One Hundred Years Of Solitude", "Gabriel García Márquez", 1967)));
         CheckoutMenu activity = new CheckoutMenu(appIO, library);
 
         when(appIO.read()).thenReturn("cancel");
@@ -38,16 +38,12 @@ class CheckoutMenuTest {
     void expectsListOfBooksThatCanBeCheckedOutWhenSearchedByName() {
         ApplicationIO appIO = mock(ApplicationIO.class);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        Library library = library(singletonList(
-                book("Hunger Games", "Suzzane Collins", 2008)
-        ));
+        Library library = library(singletonList(book("Hunger Games", "Suzzane Collins", 2008)));
         CheckoutMenu activity = new CheckoutMenu(appIO, library);
 
         when(appIO.read()).thenReturn("Hunger Games");
-        String expectedString = "\n\t\tBooks by that name:\n" +
-                "\t1 - Hunger Games, by Suzzane Collins (2008)\n" +
-                "\tcancel - Cancel checkout\n" +
-                "Enter book number [default: cancel]: ";
+        String expectedString = "\n\t\tBooks by that name:\n" + "\t1 - Hunger Games, by Suzzane Collins (2008)\n"
+                + "\tcancel - Cancel checkout\n" + "Enter book number [default: cancel]: ";
         activity.run();
 
         verify(appIO, times(2)).read();
@@ -59,18 +55,14 @@ class CheckoutMenuTest {
     void expectsTwoBooksThatCanBeCheckedOUtWhenSearchedByName() {
         ApplicationIO appIO = mock(ApplicationIO.class);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        Library library = library(Arrays.asList(
-                book("Hunger Games", "Suzanne Collins", 2008),
-                book("Catching Fire (Hunger Games)", "Suzanne Collins", 2010)
-        ));
+        Library library = library(Arrays.asList(book("Hunger Games", "Suzanne Collins", 2008),
+                book("Catching Fire (Hunger Games)", "Suzanne Collins", 2010)));
         CheckoutMenu activity = new CheckoutMenu(appIO, library);
 
         when(appIO.read()).thenReturn("Hunger Games");
-        String expectedString = "\n\t\tBooks by that name:\n" +
-                "\t1 - Hunger Games, by Suzanne Collins (2008)\n" +
-                "\t2 - Catching Fire (Hunger Games), by Suzanne Collins (2010)\n" +
-                "\tcancel - Cancel checkout\n" +
-                "Enter book number [default: cancel]: ";
+        String expectedString = "\n\t\tBooks by that name:\n" + "\t1 - Hunger Games, by Suzanne Collins (2008)\n"
+                + "\t2 - Catching Fire (Hunger Games), by Suzanne Collins (2010)\n" + "\tcancel - Cancel checkout\n"
+                + "Enter book number [default: cancel]: ";
         activity.run();
 
         verify(appIO, times(2)).read();
@@ -81,9 +73,7 @@ class CheckoutMenuTest {
     @Test
     void expectsNoBookInLibraryOnCheckout() {
         ApplicationIO appIO = mock(ApplicationIO.class);
-        List<Book> books = singletonList(
-                book("Hunger Games", "Suzanne Collins", 2008)
-        );
+        List<Book> books = singletonList(book("Hunger Games", "Suzanne Collins", 2008));
         Library library = library(books);
         CheckoutMenu menu = new CheckoutMenu(appIO, library);
 
@@ -104,7 +94,7 @@ class CheckoutMenuTest {
     void expectsNoBookFoundIfBookDoesNotExistInLibrary() {
         ApplicationIO appIO = mock(ApplicationIO.class);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        Library library = library(EMPTY_LIST);
+        Library library = library(Arrays.asList(book("Somebook", "author", 2009)));
         CheckoutMenu menu = new CheckoutMenu(appIO, library);
 
         when(appIO.read()).thenReturn("hunger");

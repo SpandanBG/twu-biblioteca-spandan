@@ -1,4 +1,4 @@
-import com.biblioteca.activities.MainMenu;
+import com.biblioteca.activities.Launcher;
 import com.biblioteca.library.Library;
 import com.biblioteca.userinteface.ApplicationIO;
 
@@ -18,7 +18,7 @@ public class App {
                 book("Catching Fire (Hunger Games)", "Suzanne Collins", 2010)
 
         ));
-        MainMenu activity = new MainMenu(appIO, library);
-        activity.run();
+        Launcher launcher = new Launcher(appIO, library);
+        launcher.run();
     }
 }

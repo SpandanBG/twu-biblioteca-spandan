@@ -28,6 +28,7 @@ class ReturnMenuTest {
         Library library = library(books);
         ReturnMenu menu = new ReturnMenu(appIO, library);
 
+        when(appIO.read()).thenReturn("cancel");
         library.checkOutBook(books.get(1));
         String expectedString = "\n\t\tBorrowed books:\n" +
                 "\t1 - War and Peace, by Leo Tolstoy (1865)\n" +
@@ -52,6 +53,7 @@ class ReturnMenuTest {
 
         library.checkOutBook(books.get(0));
         library.checkOutBook(books.get(1));
+        when(appIO.read()).thenReturn("cancel");
         String expectedString = "\n\t\tBorrowed books:\n" +
                 "\t1 - Digital Fortress, by Dan Brown (1998)\n" +
                 "\t2 - War and Peace, by Leo Tolstoy (1865)\n" +
