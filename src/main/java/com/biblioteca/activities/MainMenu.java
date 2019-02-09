@@ -34,8 +34,14 @@ public class MainMenu {
 
     private void setupMenu() {
         options.addOption("list", "List books", this::listBook);
-        options.addOption("checkout", "Checkout book", this::launchCheckoutActivity);
+        options.addOption("checkout", "Checkout book", this::launchCheckoutMenu);
+        options.addOption("return", "Return book", this::launchReturnMenu);
         options.addOption("exit", "Exit application", this::exit);
+    }
+
+    private void launchReturnMenu() {
+        ReturnMenu returnMenu = new ReturnMenu(appIO, library);
+        returnMenu.run();
     }
 
     private void showMenu() {
@@ -63,7 +69,7 @@ public class MainMenu {
         appIO.print(builder.toString());
     }
 
-    private void launchCheckoutActivity() {
+    private void launchCheckoutMenu() {
         CheckoutMenu activity = new CheckoutMenu(appIO, library);
         activity.run();
     }

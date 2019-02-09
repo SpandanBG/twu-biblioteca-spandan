@@ -36,6 +36,7 @@ class MainMenuTest {
         String expectedMenu = "\n\t\tCommand Options\n" +
                 "\tlist - List books\n" +
                 "\tcheckout - Checkout book\n" +
+                "\treturn - Return book\n" +
                 "\texit - Exit application\n" +
                 "Command >> ";
         when(appIO.read()).thenReturn("exit");

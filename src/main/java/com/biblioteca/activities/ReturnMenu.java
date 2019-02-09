@@ -9,20 +9,21 @@ import com.biblioteca.utils.OptionTemplates;
 import com.biblioteca.utils.Options;
 
 // Represents the business policy to return book to library
-public class ReturnMenu {
+class ReturnMenu {
 
-    public static final String BOOK_RETURNED_MESSAGE = "\nBook returned. There is always something to read.\n";
-    public static final String CANCEL_OPTION = "cancel";
+    private static final String BOOK_RETURNED_MESSAGE = "\nBook returned. There is always something to read.\n";
+    private static final String CANCEL_OPTION = "cancel";
+
     private final ApplicationIO appIO;
     private final Library library;
 
-    public ReturnMenu(ApplicationIO appIO, Library library) {
+    ReturnMenu(ApplicationIO appIO, Library library) {
         this.appIO = appIO;
         this.library = library;
     }
 
 
-    public void run() {
+    void run() {
         Library borrowedBooks = library.borrowedBooks();
         if (borrowedBooks.isEmpty()) {
             appIO.print("\nNo books borrowed\n");

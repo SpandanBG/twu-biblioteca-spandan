@@ -13,7 +13,10 @@ public class App {
         ApplicationIO appIO = createConsoleIO();
         Library library = library(Arrays.asList(
                 book("One Hundred Years Of Solitude", "Gabriel García Márquez", 1967),
-                book("Fever Code", "James Dashner", 2009)
+                book("Fever Code", "James Dashner", 2009),
+                book("Hunger Games", "Suzanne Collins", 2008),
+                book("Catching Fire (Hunger Games)", "Suzanne Collins", 2010)
+
         ));
         MainMenu activity = new MainMenu(appIO, library);
         activity.run();
