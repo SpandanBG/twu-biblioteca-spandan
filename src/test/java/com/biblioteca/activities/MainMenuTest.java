@@ -22,16 +22,16 @@ class MainMenuTest {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         MainMenu activity = new MainMenu(appIO, library(EMPTY_LIST));
 
-        String expectedMenu = "\n\t\tCommand Options\n" +
+        String expectedMenu = "\n\t\tAvailable commands:\n" +
                 "\tlist - List books\n" +
                 "\tcheckout - Checkout book\n" +
                 "\treturn - Return book\n" +
-                "\texit - Exit application\n" +
-                "Command >> ";
+                "\thelp - Show menu\n" +
+                "\texit - Exit application\n";
         when(appIO.read()).thenReturn("exit");
         activity.run();
 
-        verify(appIO, times(2)).print(captor.capture());
+        verify(appIO, times(3)).print(captor.capture());
         assertEquals(expectedMenu, captor.getAllValues().get(0));
     }
 
@@ -49,8 +49,8 @@ class MainMenuTest {
         when(appIO.read()).thenReturn("list").thenReturn("exit");
         activity.run();
 
-        verify(appIO, times(4)).print(captor.capture());
-        assertEquals(expectedList, captor.getAllValues().get(1));
+        verify(appIO, times(5)).print(captor.capture());
+        assertEquals(expectedList, captor.getAllValues().get(2));
     }
 
     @Test
@@ -63,8 +63,8 @@ class MainMenuTest {
         when(appIO.read()).thenReturn("exit");
         activity.run();
 
-        verify(appIO, times(2)).print(captor.capture());
-        assertEquals(expectedMessage, captor.getAllValues().get(1));
+        verify(appIO, times(3)).print(captor.capture());
+        assertEquals(expectedMessage, captor.getAllValues().get(2));
     }
 
     @Test
@@ -83,8 +83,8 @@ class MainMenuTest {
         when(appIO.read()).thenReturn("list").thenReturn("exit");
         activity.run();
 
-        verify(appIO, times(4)).print(captor.capture());
-        assertEquals(expectedList, captor.getAllValues().get(1));
+        verify(appIO, times(5)).print(captor.capture());
+        assertEquals(expectedList, captor.getAllValues().get(2));
     }
 
     @Test
@@ -97,7 +97,7 @@ class MainMenuTest {
         when(appIO.read()).thenReturn("list").thenReturn("exit");
         activity.run();
 
-        verify(appIO, times(4)).print(captor.capture());
-        assertEquals(expectedList, captor.getAllValues().get(1));
+        verify(appIO, times(5)).print(captor.capture());
+        assertEquals(expectedList, captor.getAllValues().get(2));
     }
 }

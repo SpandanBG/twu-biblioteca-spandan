@@ -11,6 +11,8 @@ public class MainMenu {
 
     private static final String LIST_BOOK_HEADER = "\nAvailable books:\n";
     private static final String NO_BOOKS_AVAILABLE = "\nNo books available.\n";
+    private static final String MENU_HEADER = "Available commands:";
+    private static final String MENU_FOOTER = "";
 
     private final ApplicationIO appIO;
     private final Library library;
@@ -28,13 +30,29 @@ public class MainMenu {
     public void run() {
         setupMenu();
         showMenu();
+        interactWithUser();
+    }
+
+    private void interactWithUser() {
+        while (!toExit) {
+            appIO.print(">> ");
+            String option = appIO.read();
+            options.selectOrDefault(option, this::invalidOption);
+        }
+    }
+
+    private void invalidOption() {
+        appIO.print("Unknown option!\n");
     }
 
     private void setupMenu() {
         options.addOption("list", "List books", this::listBook);
         options.addOption("checkout", "Checkout book", this::launchCheckoutMenu);
         options.addOption("return", "Return book", this::launchReturnMenu);
+        options.addOption("help", "Show menu", this::showMenu);
         options.addOption("exit", "Exit application", this::exit);
+        options.setPrefix(MENU_HEADER);
+        options.setSuffix(MENU_FOOTER);
     }
 
     private void launchReturnMenu() {
@@ -43,24 +61,18 @@ public class MainMenu {
     }
 
     private void showMenu() {
-        String menuString = OptionTemplates.COMMAND_VIEW.view(options);
-        while (!toExit) {
-            appIO.print(menuString);
-            String option = appIO.read();
-            options.selectOrDefault(option, () -> appIO.print("Unknown option!\n"));
-        }
+        String menuString = OptionTemplates.CUSTOM_VIEW.view(options);
+        appIO.print(menuString);
     }
 
     private void listBook() {
-        String libraryView = LibraryTemplates.INFORMAL_LIST_VIEW.view(library);
-        if (libraryView.equals("")) {
+        if (library.isEmpty()) {
             appIO.print(NO_BOOKS_AVAILABLE);
             return;
         }
-        StringBuilder builder = new StringBuilder();
-        builder.append(LIST_BOOK_HEADER);
-        builder.append(libraryView);
-        appIO.print(builder.toString());
+        String libraryView = LibraryTemplates.INFORMAL_LIST_VIEW.view(library);
+        String builder = LIST_BOOK_HEADER + libraryView;
+        appIO.print(builder);
     }
 
     private void launchCheckoutMenu() {

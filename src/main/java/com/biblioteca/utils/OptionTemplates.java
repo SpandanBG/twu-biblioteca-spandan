@@ -6,17 +6,13 @@ public enum OptionTemplates {
         @Override
         public String view(Options options) {
             StringBuilder builder = new StringBuilder();
-            builder.append(String.format("\n\t\t%s:\n",
-                    options.getPrefix()
-            ));
+            builder.append("\n\t\t").append(options.getPrefix()).append("\n");
             options.forEachOption((optionPair) -> {
                 builder.append("\t").append(optionPair.getKey());
                 builder.append(" - ").append(optionPair.getValue());
                 builder.append("\n");
             });
-            builder.append(String.format(
-                    "%s: ", options.getSuffix()
-            ));
+            builder.append(options.getSuffix());
             return builder.toString();
         }
     },
@@ -31,7 +27,6 @@ public enum OptionTemplates {
                 builder.append(" - ").append(optionPair.getValue());
                 builder.append("\n");
             });
-            builder.append("Command >> ");
             return builder.toString();
         }
     };
