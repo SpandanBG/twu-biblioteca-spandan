@@ -1,5 +1,7 @@
 package com.biblioteca.library;
 
+import com.biblioteca.utils.Incrementor;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -19,19 +21,17 @@ public class Library {
         return new Library(books);
     }
 
-    public Library filterBookByName(String bookName) {
-        List<Book> selectedBook = new ArrayList<>();
-        availableBooks.forEach(book -> {
-            if (book.name().toLowerCase().contains(bookName.toLowerCase())) {
-                selectedBook.add(book);
-            }
-        });
-        return new Library(selectedBook);
-    }
-
     public void forEachBook(Consumer<? super Book> action) {
         for (Book book : availableBooks) {
             action.accept(book);
+        }
+    }
+
+    public void forEachBook(String byName, Consumer<? super Book> action) {
+        for (Book book : availableBooks) {
+            if (book.name().toLowerCase().contains(byName.toLowerCase())) {
+                action.accept(book);
+            }
         }
     }
 
@@ -44,6 +44,12 @@ public class Library {
 
     public boolean isEmpty() {
         return availableBooks.size() == 0;
+    }
+
+    public boolean hasBooks(String byName) {
+        Incrementor count = new Incrementor(0);
+        forEachBook(byName, book -> count.increment(1));
+        return count.value() > 0;
     }
 
     public Library borrowedBooks() {

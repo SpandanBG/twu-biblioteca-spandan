@@ -101,7 +101,7 @@ class CheckoutMenuTest {
         menu.run();
 
         verify(appIO, times(2)).print(captor.capture());
-        assertEquals("\nNo book with that name\n", captor.getAllValues().get(1));
+        assertEquals("\nThat book is not available.\n", captor.getAllValues().get(1));
     }
 
 }

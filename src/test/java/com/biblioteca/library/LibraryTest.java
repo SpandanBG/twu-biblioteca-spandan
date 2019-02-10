@@ -26,26 +26,6 @@ class LibraryTest {
     }
 
     @Test
-    void expectsLibraryOfBooksWithNamePatternMatched() {
-        List<Book> books = Arrays.asList(
-                book("Hunger Games", "Suzanne Collins", 2008),
-                book("Catching Fire (Hunger Games)", "Suzanne Collins", 2010),
-                book("Fever Code", "James Dashner", 2016)
-        );
-        Library library = library(books);
-
-        Library selectedLibrary = library.filterBookByName("hUNGER gAMES");
-
-        Incrementor count = new Incrementor(1);
-        selectedLibrary.forEachBook(book -> {
-            assertTrue(books.contains(book));
-            count.increment(1);
-        });
-
-        assertEquals(3, count.value());
-    }
-
-    @Test
     void expectsABookToBeCheckoutSuccessfully() {
         Book book = book("Some book", "A author", 2020);
         Library library = library(singletonList(book));
@@ -92,6 +72,29 @@ class LibraryTest {
         Library library = library(singletonList(book));
 
         assertThrows(BookNotFoundException.class, () -> library.checkInBook(book));
+    }
+
+    @Test
+    void expectsBooksWithHungerInTheName() {
+        Library library = library(Arrays.asList(
+                book("Hunger Games", "Suzanne Collins", 2008),
+                book("Fever Code", "James Dashner", 2009)
+        ));
+
+        Incrementor count = new Incrementor(0);
+        library.forEachBook("hunger", book -> count.increment(1));
+
+        assertEquals(1, count.value());
+    }
+
+    @Test
+    void expectsLibraryToHaveBooksByNameHunger() {
+        Library library = library(Arrays.asList(
+                book("Hunger Games", "Suzanne Collins", 2008),
+                book("Fever Code", "James Dashner", 2009)
+        ));
+
+        assertTrue(library.hasBooks("hUNGER"));
     }
 
 }
