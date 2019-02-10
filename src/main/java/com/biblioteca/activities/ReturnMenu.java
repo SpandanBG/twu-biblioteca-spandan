@@ -11,8 +11,13 @@ import com.biblioteca.utils.Options;
 // Represents the business policy to return book to library
 class ReturnMenu {
 
-    private static final String BOOK_RETURNED_MESSAGE = "\nBook returned. There is always something to read.\n";
+    private static final String OPTIONS_PREFIX = "Borrowed books:";
+    private static final String OPTIONS_SUFFIX = "Enter book number [default: cancel]: ";
     private static final String CANCEL_OPTION = "cancel";
+
+    private static final String BOOK_RETURNED_MESSAGE = "\nBook returned. There is always something to read.\n";
+    private static final String NO_BOOKS_MESSAGE = "\nNo books borrowed.\n";
+    private static final String INVALID_INPUT_MESSAGE = "Unknown option!\n";
 
     private final ApplicationIO appIO;
     private final Library library;
@@ -22,22 +27,20 @@ class ReturnMenu {
         this.library = library;
     }
 
-
     void run() {
-        Library borrowedBooks = library.borrowedBooks();
-        if (borrowedBooks.isEmpty()) {
-            appIO.print("\nNo books borrowed\n");
+        if (library.hasUnavailableBooks()) {
+            appIO.print(NO_BOOKS_MESSAGE);
             return;
         }
-        Options options = createSelectableBooks(borrowedBooks);
+        Options options = putBooksInOptions();
         displayOptions(options);
-        chooseOption(options);
+        interactWithUser(options);
     }
 
-    private Options createSelectableBooks(Library borrowedBooks) {
+    private Options putBooksInOptions() {
         Options options = new Options();
         Incrementor index = new Incrementor(1);
-        borrowedBooks.forEachBook(book -> {
+        library.forEachUnavailable(book -> {
             options.addOption(
                     index.value().toString(),
                     BookTemplates.INFORMAL.view(book),
@@ -49,14 +52,14 @@ class ReturnMenu {
     }
 
     private void displayOptions(Options options) {
-        options.setPrefix("Borrowed books");
-        options.setSuffix("Enter book number [default: cancel]");
-        options.addOption("cancel", "Cancel return", () -> {
+        options.setPrefix(OPTIONS_PREFIX);
+        options.setSuffix(OPTIONS_SUFFIX);
+        options.addOption(CANCEL_OPTION, "Cancel return", () -> {
         });
         appIO.print(OptionTemplates.CUSTOM_VIEW.view(options));
     }
 
-    private void chooseOption(Options options) {
+    private void interactWithUser(Options options) {
         String option = appIO.read();
         if (option.equals("")) {
             option = CANCEL_OPTION;
@@ -64,12 +67,12 @@ class ReturnMenu {
         options.selectOrDefault(option, this::invalidInput);
     }
 
-    private void invalidInput() {
-        appIO.print("Unknown option!\n");
+    private void returnBook(Book book) {
+        library.returnBook(book);
+        appIO.print(BOOK_RETURNED_MESSAGE);
     }
 
-    private void returnBook(Book book) {
-        library.checkInBook(book);
-        appIO.print(BOOK_RETURNED_MESSAGE);
+    private void invalidInput() {
+        appIO.print(INVALID_INPUT_MESSAGE);
     }
 }

@@ -41,7 +41,7 @@ class CheckoutMenu {
 
     private void processCheckout() {
         String bookName = inputBookName();
-        if (!library.hasBooks(bookName)) {
+        if (!library.hasAvailableBooks(bookName)) {
             appIO.print(NO_SUCH_BOOK_MESSAGE);
             return;
         }
@@ -80,13 +80,14 @@ class CheckoutMenu {
     private void displayOptions(Options options) {
         options.setPrefix(OPTIONS_PREFIX);
         options.setSuffix(OPTIONS_SUFFIX);
-        options.addOption(CANCEL_OPTION, "Cancel checkout", () -> {});
+        options.addOption(CANCEL_OPTION, "Cancel checkout", () -> {
+        });
         appIO.print(OptionTemplates.CUSTOM_VIEW.view(options));
     }
 
     private void checkoutBook(Book book) {
         try {
-            library.checkOutBook(book);
+            library.checkoutBook(book);
             appIO.print(BOOK_CHECKED_MESSAGE);
         } catch (BookNotAvailableException ignored) {
             appIO.print(NO_SUCH_BOOK_MESSAGE);

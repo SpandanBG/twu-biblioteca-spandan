@@ -4,6 +4,7 @@ import com.biblioteca.utils.Incrementor;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.biblioteca.library.Book.book;
@@ -30,7 +31,7 @@ class LibraryTest {
         Book book = book("Some book", "A author", 2020);
         Library library = library(singletonList(book));
 
-        assertDoesNotThrow(() -> library.checkOutBook(book));
+        assertDoesNotThrow(() -> library.checkoutBook(book));
     }
 
     @Test
@@ -38,7 +39,7 @@ class LibraryTest {
         Book book = book("Some book", "A author", 2020);
         Library library = library(EMPTY_LIST);
 
-        assertThrows(BookNotAvailableException.class, () -> library.checkOutBook(book));
+        assertThrows(BookNotAvailableException.class, () -> library.checkoutBook(book));
     }
 
     @Test
@@ -61,9 +62,9 @@ class LibraryTest {
         Book book = book("Some book", "A author", 2020);
         Library library = library(singletonList(book));
 
-        library.checkOutBook(book);
+        library.checkoutBook(book);
 
-        assertDoesNotThrow(() -> library.checkInBook(book));
+        assertDoesNotThrow(() -> library.returnBook(book));
     }
 
     @Test
@@ -71,7 +72,7 @@ class LibraryTest {
         Book book = book("Some book", "A author", 2020);
         Library library = library(singletonList(book));
 
-        assertThrows(BookNotFoundException.class, () -> library.checkInBook(book));
+        assertThrows(InvalidBookException.class, () -> library.returnBook(book));
     }
 
     @Test
@@ -94,7 +95,32 @@ class LibraryTest {
                 book("Fever Code", "James Dashner", 2009)
         ));
 
-        assertTrue(library.hasBooks("hUNGER"));
+        assertTrue(library.hasAvailableBooks("hUNGER"));
     }
 
+    @Test
+    void expectsLibraryToHaveItsBookBorrowed() {
+        Book book = book("Fever Code", "James Dashner", 2009);
+        Library library = library(Collections.singletonList(book));
+
+        library.checkoutBook(book);
+
+        assertTrue(library.hasUnavailableBooks());
+    }
+
+    @Test
+    void expectsToIterateThroughUnavailableBooks() {
+        List<Book> books = Arrays.asList(
+                book("Hunger Games", "Suzanne Collins", 2008),
+                book("Fever Code", "James Dashner", 2009)
+        );
+        Library library = library(books);
+        Incrementor count = new Incrementor(0);
+
+        library.checkoutBook(books.get(0));
+        library.checkoutBook(books.get(1));
+        library.forEachUnavailable(book -> count.increment(1));
+
+        assertEquals(2, count.value());
+    }
 }

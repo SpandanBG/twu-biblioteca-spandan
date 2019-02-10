@@ -29,7 +29,7 @@ class ReturnMenuTest {
         ReturnMenu menu = new ReturnMenu(appIO, library);
 
         when(appIO.read()).thenReturn("cancel");
-        library.checkOutBook(books.get(1));
+        library.checkoutBook(books.get(1));
         String expectedString = "\n\t\tBorrowed books:\n" +
                 "\t1 - War and Peace, by Leo Tolstoy (1865)\n" +
                 "\tcancel - Cancel return\n" +
@@ -51,8 +51,8 @@ class ReturnMenuTest {
         Library library = library(books);
         ReturnMenu menu = new ReturnMenu(appIO, library);
 
-        library.checkOutBook(books.get(0));
-        library.checkOutBook(books.get(1));
+        library.checkoutBook(books.get(0));
+        library.checkoutBook(books.get(1));
         when(appIO.read()).thenReturn("cancel");
         String expectedString = "\n\t\tBorrowed books:\n" +
                 "\t1 - Digital Fortress, by Dan Brown (1998)\n" +
@@ -91,7 +91,7 @@ class ReturnMenuTest {
         when(appIO.read()).thenReturn("1");
         menu.run();
 
-        verify(library).checkInBook(book);
+        verify(library).returnBook(book);
     }
 
 }

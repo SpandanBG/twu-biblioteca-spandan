@@ -21,6 +21,20 @@ public class Library {
         return new Library(books);
     }
 
+    public void checkoutBook(Book book) {
+        if (!availableBooks.remove(book)) {
+            throw new BookNotAvailableException();
+        }
+        unavailableBooks.add(book);
+    }
+
+    public void returnBook(Book book) {
+        if (!unavailableBooks.remove(book)) {
+            throw new InvalidBookException();
+        }
+        availableBooks.add(book);
+    }
+
     public void forEachBook(Consumer<? super Book> action) {
         for (Book book : availableBooks) {
             action.accept(book);
@@ -35,31 +49,27 @@ public class Library {
         }
     }
 
-    public void checkOutBook(Book book) {
-        if (!availableBooks.remove(book)) {
-            throw new BookNotAvailableException();
+    public void forEachUnavailable(Consumer<? super Book> action) {
+        for (Book book : unavailableBooks) {
+            action.accept(book);
         }
-        unavailableBooks.add(book);
     }
 
     public boolean isEmpty() {
         return availableBooks.size() == 0;
     }
 
-    public boolean hasBooks(String byName) {
+    public boolean hasAvailableBooks(String byName) {
         Incrementor count = new Incrementor(0);
         forEachBook(byName, book -> count.increment(1));
         return count.value() > 0;
     }
 
-    public Library borrowedBooks() {
-        return new Library(unavailableBooks);
+    public boolean hasUnavailableBooks() {
+        return unavailableBooks.size() > 0;
     }
 
-    public void checkInBook(Book book) {
-        if (!unavailableBooks.remove(book)) {
-            throw new BookNotFoundException();
-        }
-        availableBooks.add(book);
+    public Library borrowedBooks() {
+        return new Library(unavailableBooks);
     }
 }
