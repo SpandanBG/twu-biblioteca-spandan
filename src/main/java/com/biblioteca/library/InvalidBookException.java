@@ -1,3 +1,3 @@
 package com.biblioteca.library;
 
-public class InvalidBookException extends RuntimeException { }
+class InvalidBookException extends RuntimeException { }

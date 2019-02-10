@@ -34,15 +34,15 @@ public class Options {
         this.suffix = suffix;
     }
 
-    public String getPrefix() {
+    String getPrefix() {
         return prefix;
     }
 
-    public String getSuffix() {
+    String getSuffix() {
         return suffix;
     }
 
-    public void select(String option) {
+    void select(String option) {
         actionMap.get(option).execute();
     }
 
@@ -50,7 +50,7 @@ public class Options {
         actionMap.getOrDefault(option, defaultAction).execute();
     }
 
-    public void forEachOption(Consumer<? super Pair> action) {
+    void forEachOption(Consumer<? super Pair> action) {
         descriptionMap.forEach(action);
     }
 }
