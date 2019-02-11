@@ -32,16 +32,16 @@ class LauncherTest {
         Library library = Library.library(EMPTY_LIST);
         Launcher launcher = new Launcher(appIO, library);
 
-        String expectedMenu = "\n\t\tCommand Options\n" +
+        String expectedMenu = "\n\t\tAvailable commands:\n" +
                 "\tlist - List books\n" +
                 "\tcheckout - Checkout book\n" +
                 "\treturn - Return book\n" +
-                "\texit - Exit application\n" +
-                "Command >> ";
+                "\thelp - Show menu\n" +
+                "\texit - Exit application\n";
         when(appIO.read()).thenReturn("exit");
         launcher.run();
 
-        verify(appIO, times(3)).print(captor.capture());
+        verify(appIO, times(4)).print(captor.capture());
         assertEquals(expectedMenu, captor.getAllValues().get(1));
     }
 

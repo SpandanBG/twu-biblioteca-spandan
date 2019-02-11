@@ -28,7 +28,7 @@ class ReturnMenu {
     }
 
     void run() {
-        if (library.hasUnavailableBooks()) {
+        if (!library.hasUnavailableBooks()) {
             appIO.print(NO_BOOKS_MESSAGE);
             return;
         }

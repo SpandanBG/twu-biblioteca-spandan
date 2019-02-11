@@ -3,10 +3,12 @@ package com.biblioteca.activities;
 import com.biblioteca.library.Book;
 import com.biblioteca.library.Library;
 import com.biblioteca.userinteface.ApplicationIO;
+import com.sun.org.apache.xpath.internal.Arg;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.biblioteca.library.Book.book;
@@ -72,9 +74,10 @@ class ReturnMenuTest {
         Library library = library(books);
         ReturnMenu menu = new ReturnMenu(appIO, library);
 
+        when(appIO.read()).thenReturn("return").thenReturn("exit");
         menu.run();
 
-        verify(appIO).print("\nNo books borrowed\n");
+        verify(appIO).print("\nNo books borrowed.\n");
     }
 
     @Test
@@ -82,16 +85,15 @@ class ReturnMenuTest {
         ApplicationIO appIO = mock(ApplicationIO.class);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         Book book = book("Glass Sword", "Victoria Aveyard", 2016);
-        Library library = mock(Library.class);
+        Library library = library(Collections.singletonList(book));
         ReturnMenu menu = new ReturnMenu(appIO, library);
 
-        when(library.borrowedBooks()).thenReturn(library(
-                singletonList(book)
-        ));
+        library.checkoutBook(book);
         when(appIO.read()).thenReturn("1");
         menu.run();
 
-        verify(library).returnBook(book);
+        verify(appIO, times(2)).print(captor.capture());
+        assertEquals("\nBook returned. There is always something to read.\n", captor.getAllValues().get(1));
     }
 
 }

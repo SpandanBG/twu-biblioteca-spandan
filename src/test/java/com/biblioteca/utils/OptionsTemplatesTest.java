@@ -15,8 +15,7 @@ class OptionsTemplatesTest {
         String menuView = OptionTemplates.COMMAND_VIEW.view(options);
         String expectedView = "\n\t\tCommand Options\n" +
                 "\tlist - List books\n" +
-                "\texit - Exit application\n" +
-                "Command >> ";
+                "\texit - Exit application\n";
 
         assertEquals(expectedView, menuView);
     }
