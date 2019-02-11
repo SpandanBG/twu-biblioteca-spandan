@@ -20,6 +20,7 @@ class CheckoutMenu {
     private static final String CANCEL_OPTION = "cancel";
 
     private static final String INVALID_INPUT_MESSAGE = "Unknown option!\n";
+    private static final String NO_INPUT_MESSAGE = "\nHmmm... Looks like you didn't type anything.\n";
     private static final String NO_BOOKS_MESSAGE = "\nNo books in library.\n";
     private static final String NO_SUCH_BOOK_MESSAGE = "\nThat book is not available.\n";
 
@@ -40,7 +41,11 @@ class CheckoutMenu {
     }
 
     private void processCheckout() {
-        String bookName = inputBookName();
+        String bookName = inputBookName().trim();
+        if (bookName.equals("")) {
+            appIO.print(NO_INPUT_MESSAGE);
+            return;
+        }
         if (!library.hasAvailableBooks(bookName)) {
             appIO.print(NO_SUCH_BOOK_MESSAGE);
             return;

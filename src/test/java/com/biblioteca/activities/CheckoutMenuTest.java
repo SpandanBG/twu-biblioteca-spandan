@@ -104,4 +104,19 @@ class CheckoutMenuTest {
         assertEquals("\nThat book is not available.\n", captor.getAllValues().get(1));
     }
 
+    @Test
+    void expectsNoInputWhenSearchingForBook() {
+        ApplicationIO appIO = mock(ApplicationIO.class);
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        Library library = mock(Library.class);
+        CheckoutMenu menu = new CheckoutMenu(appIO, library);
+
+        String expectedString = "\nHmmm... Looks like you didn't type anything.\n";
+        when(appIO.read()).thenReturn("\n");
+        menu.run();
+
+        verify(appIO, times(2)).print(captor.capture());
+        assertEquals(expectedString, captor.getAllValues().get(1));
+    }
+
 }
