@@ -1,12 +1,12 @@
-import com.biblioteca.activities.Launcher;
-import com.biblioteca.library.Library;
-import com.biblioteca.userinteface.ApplicationIO;
+import com.biblioteca.controller.menus.Launcher;
+import com.biblioteca.model.library.Library;
+import com.biblioteca.view.ApplicationIO;
 
 import java.util.Arrays;
 
-import static com.biblioteca.library.Book.book;
-import static com.biblioteca.library.Library.library;
-import static com.biblioteca.userinteface.ApplicationIO.createConsoleIO;
+import static com.biblioteca.model.library.Book.book;
+import static com.biblioteca.model.library.Library.library;
+import static com.biblioteca.view.ApplicationIO.createConsoleIO;
 
 public class App {
     public static void main(String... args) {
