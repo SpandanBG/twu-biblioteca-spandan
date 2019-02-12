@@ -56,7 +56,7 @@ public class Library {
     }
 
     public boolean isEmpty() {
-        return availableBooks.size() == 0;
+        return availableBooks.isEmpty();
     }
 
     public boolean hasAvailableBooks(String byName) {
@@ -67,9 +67,5 @@ public class Library {
 
     public boolean hasUnavailableBooks() {
         return unavailableBooks.size() > 0;
-    }
-
-    public Library borrowedBooks() {
-        return new Library(unavailableBooks);
     }
 }
